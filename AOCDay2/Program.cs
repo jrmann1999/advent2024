@@ -99,14 +99,14 @@ class AOCDay2
             {
                 if (comp > 0)
                 {
-                    return Dampen(s);
+                    return 0;
                 }
             }
             else
             {
                 if (comp < 0)
                 {
-                    return Dampen(s);
+                    return 0;
                 }
             }
         }
