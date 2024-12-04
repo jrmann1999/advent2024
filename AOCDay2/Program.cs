@@ -1,4 +1,6 @@
 ﻿using System.Runtime.CompilerServices;
+using System.Runtime.InteropServices;
+using System.Runtime.Intrinsics.Arm;
 
 class AOCDay2
 {
@@ -20,126 +22,125 @@ class AOCDay2
 
     public int Parse(string[] s)
     {
-        int diff = int.Parse(s[0]) - int.Parse(s[1]);
         string direction = "";
-        if (diff == 0)
-        {
-            return 0;
-        }
-        else if (diff > 0)
-        {
-            direction = "more";
-
-        }
-        else
-        {
-            direction = "less";
-        }
         for (int i = 0; i < s.Length; i++)
         {
             if (i == (s.Length - 1))
             {
                 break;
             }
-            var diff2 = int.Abs(int.Parse(s[i]) - int.Parse(s[i + 1]));
-            if (diff2 < 1 | diff2 > 3)
+            int comp = int.Parse(s[i]) - int.Parse(s[i + 1]);
+            if (i == 0)
             {
-                return 0;
+
+                if (comp == 0)
+                {
+                    return i;
+                }
+                else if (comp > 0)
+                {
+                    direction = "more";
+                }
+                else
+                {
+                    direction = "less";
+                }
             }
-            var comp = int.Parse(s[i]) - int.Parse(s[i + 1]);
+            if (int.Abs(comp) < 1 | int.Abs(comp) > 3)
+            {
+                return i;
+            }
             if (direction == "less")
             {
                 if (comp > 0)
                 {
-                    return 0;
+                    return i;
                 }
             }
             else
             {
                 if (comp < 0)
                 {
-                    return 0;
+                    return i;
                 }
             }
         }
-        return 1;
+        return -1;
     }
 
     public int Parse2(string[] s)
     {
-
-        int diff = int.Parse(s[0]) - int.Parse(s[1]);
-        string direction = "";
-        if (diff == 0)
+        int res = Parse(s);
+        string[] news;
+        if (res == -1)
         {
-            return 0;
-        }
-        else if (diff > 0)
-        {
-            direction = "more";
-
+            return -1;
         }
         else
         {
-            direction = "less";
+            Console.WriteLine("Res: {0}", res);
+            if (Parse(s[1..]) == -1) { return -1; }
+            if (Parse(s[..^1]) == -1) { return -1; }
+
+            string[] s1 = s[..res];
+            string[] s2 = s[(res + 1)..];
+            news = s1.Concat(s2).ToArray();
         }
-        for (int i = 0; i < s.Length; i++)
+        if (Parse(news) == -1) 
+        { 
+            return -1;
+        }
+        else
         {
-            if (i == (s.Length - 1))
-            {
-                break;
-            }
-            var diff2 = int.Abs(int.Parse(s[i]) - int.Parse(s[i + 1]));
-            if (diff2 < 1 | diff2 > 3)
-            {
-                return 0;
-            }
-            var comp = int.Parse(s[i]) - int.Parse(s[i + 1]);
-            if (direction == "less")
-            {
-                if (comp > 0)
-                {
-                    return 0;
-                }
-            }
-            else
-            {
-                if (comp < 0)
-                {
-                    return 0;
-                }
-            }
+            return res;
         }
-        return 1;
     }
 
-    public void Part1()
+public void Part1()
+{
+    int Total = 0;
+    foreach (var s in puzzle)
     {
-        int Total = 0;
-        foreach (var s in puzzle)
+        string[] sAry = s.Split();
+        int res = Parse(sAry);
+        Total += (res == -1 ? 1 : 0);
+        if (res == -1)
         {
-            string[] sAry = s.Split();
-            Total += Parse(sAry);
+            Console.WriteLine("Valid: {0}", String.Join(' ', sAry));
         }
-        Console.WriteLine("Part1: " + Total);
-    }
-
-    public void Part2()
-    {
-        int Total = 0;
-        foreach (var s in puzzle)
+        else
         {
-            string[] sAry = s.Split();
-            Total += Parse2(sAry);
+            Console.WriteLine("InValid: {0} on {1}", String.Join(' ', sAry), res);
         }
-        Console.WriteLine("Part2: " + Total);
     }
+    Console.WriteLine("Part1: " + Total);
+}
 
-    public static void Main()
+public void Part2()
+{
+    int Total = 0;
+    foreach (var s in puzzle)
     {
-        var AOC = new AOCDay2();
-        AOC.LoadData();
-        AOC.Part1();
-        AOC.Part2();
+        string[] sAry = s.Split();
+        int res = Parse2(sAry);
+        Total += (res == -1 ? 1 : 0);
+        if (res == -1)
+        {
+            //Console.WriteLine("Valid: {0}", String.Join(' ', sAry));
+        }
+        else
+        {
+            Console.WriteLine("InValid: {0} on {1}", String.Join(' ', sAry), res);
+        }
     }
+    Console.WriteLine("Part2: " + Total);
+}
+
+public static void Main()
+{
+    var AOC = new AOCDay2();
+    AOC.LoadData();
+    AOC.Part1();
+    AOC.Part2();
+}
 }
