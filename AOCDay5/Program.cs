@@ -75,26 +75,6 @@ class AOCDay5
         return true;
     }
 
-    private bool isGood2(string s)
-    {
-        string[] puzAry = s.Split(',');
-        for (int i = 0; i < puzAry.Length; i++)
-        {
-            foreach (string compare in puzAry[(i + 1)..])
-            {
-                if (!Map.Keys.Contains(puzAry[i]) && i < puzAry.Length - 1)
-                {
-                    
-                    return false;
-                }
-                else if (!Map[puzAry[i]].Contains(int.Parse(compare)))
-                {
-                    return false;
-                }
-            }
-        }
-        return true;
-    }
     public int Part1()
     {
         int Total = 0;
